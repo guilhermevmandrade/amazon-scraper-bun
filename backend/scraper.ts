@@ -1,33 +1,5 @@
 import axios from "axios";
-import express, { type NextFunction, type Request, type Response, } from "express";
 import { JSDOM } from "jsdom";
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Middleware para parsear JSON
-app.use(express.json());
-
-// Habilitar CORS
-app.use((req: Request, res: Response, next: NextFunction): any => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET");
-  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-
-  // Permite que o navegador continue com a requisição
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-  next();
-});
-
-// Definindo o tipo para os produtos
-interface Product {
-  title: string;
-  rating: string;
-  reviews: string;
-  imageUrl: string;
-}
 
 // Cabeçalhos customizados para imitar uma requisição de navegador
 const headers = {
@@ -36,8 +8,16 @@ const headers = {
   "Accept-Language": "en-US,en;q=0.9",
 };
 
+// Definindo o tipo para os produtos
+export interface Product {
+  title: string;
+  rating: string;
+  reviews: string;
+  imageUrl: string;
+}
+
 // Função de scraping da Amazon com tipo de retorno
-async function scrapeAmazon(keyword: string): Promise<Product[]> {
+export async function scrapeAmazon(keyword: string): Promise<Product[]> {
   try {
     const url = `https://www.amazon.com/s?k=${encodeURIComponent(keyword)}`;
     const response = await axios.get(url, { headers });
@@ -87,25 +67,3 @@ async function scrapeAmazon(keyword: string): Promise<Product[]> {
     throw error;
   }
 }
-
-// API endpoint para scraping
-app.get("/api/scrape", async (req: Request, res: Response): Promise<any> => {
-  try {
-    const keyword = req.query.keyword as string;
-
-    if (!keyword) {
-      return res.status(400).json({ error: "Parametro 'keyword' é necessário" });
-    }
-
-    const products: Product[] = await scrapeAmazon(keyword);
-    return res.json({ products });
-  } catch (error) {
-    console.error("Erro no endpoint /api/scrape:", error);
-    return res.status(500).json({ error: "Falha ao fazer scraping da Amazon" });
-  }
-});
-
-// Inicia o servidor
-app.listen(PORT, () => {
-  console.log(`Serividor rodando em http://localhost:${PORT}`);
-});
