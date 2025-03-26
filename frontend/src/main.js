@@ -1,24 +1,37 @@
-import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
+document.getElementById("scrapeButton").addEventListener("click", async () => {
+  const keyword = document.getElementById("keyword").value;
+  if (keyword.trim() === "") {
+    alert("Please enter a keyword");
+    return;
+  }
 
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
-`
+  try {
+    const response = await fetch(
+      `http://localhost:3000/api/scrape/?keyword=${encodeURIComponent(keyword)}`
+    );
+    const data = await response.json();
 
-setupCounter(document.querySelector('#counter'))
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+
+    data.products.forEach((product) => {
+      const productCard = document.createElement("div");
+      productCard.classList.add("result-card");
+
+      productCard.innerHTML = `
+        <div class='result-card-img'>
+          <img src="${product.imageUrl}" alt="${product.title}">
+        </div>
+        <div class='result-card-text'>
+          <h3>${product.title}</h3>
+          <p>Rating: ${product.rating} stars</p>
+          <p>Reviews: ${product.reviews}</p>
+        </div>
+      `;
+      resultsDiv.appendChild(productCard);
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Error scraping the products. Please try again later.");
+  }
+});
