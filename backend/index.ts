@@ -1,5 +1,5 @@
 import axios from "axios";
-import express, { NextFunction, type Request, type Response, } from "express";
+import express, { type NextFunction, type Request, type Response, } from "express";
 import { JSDOM } from "jsdom";
 
 const app = express();
