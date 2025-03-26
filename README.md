@@ -11,7 +11,7 @@ Este projeto é uma aplicação que permite realizar o scraping de produtos na A
     - Avaliação (em estrelas de 1 a 5)
     - Número de avaliações
     - URL da imagem do produto
-- O frontend exibe os produtos retornados de forma organizada e estilizada para uma interface simples e fácil de usar..
+- O frontend exibe os produtos retornados de forma organizada e estilizada para uma interface simples e fácil de usar.
 
 ## Arquitetura
 
