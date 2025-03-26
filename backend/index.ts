@@ -47,7 +47,7 @@ async function scrapeAmazon(keyword: string): Promise<Product[]> {
         const rating = ratingElement?.textContent?.split(" ")[0] ?? "N/A";
 
         // Extrai o número de avaliações
-        const reviewsElement = element.querySelector("div[data-cy='reviews-block'] a span");
+        const reviewsElement = element.querySelector("div[data-cy='reviews-block'] .rush-component span");
         const reviews = reviewsElement?.textContent?.trim().replace(",", "") ?? "0";
 
         // Extrai a URL da imagem
