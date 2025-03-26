@@ -1,5 +1,5 @@
 import axios from "axios";
-import express, { type Request, type Response } from "express";
+import express, { NextFunction, type Request, type Response, } from "express";
 import { JSDOM } from "jsdom";
 
 const app = express();
@@ -7,6 +7,19 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware para parsear JSON
 app.use(express.json());
+
+// Habilitar CORS
+app.use((req: Request, res: Response, next: NextFunction): any => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET");
+  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+  // Permite que o navegador continue com a requisição
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 // Definindo o tipo para os produtos
 interface Product {
